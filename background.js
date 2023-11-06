@@ -1,5 +1,13 @@
 const baseurl = 'https://app.rvrb.one';
 
+const startAutoDoping = () => {
+  console.log('START!);
+}
+
+const stopAutoDoping = () => {
+  console.log('STOP!);
+}
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.action.setBadgeText({
     text: "OFF",
@@ -20,3 +28,17 @@ chrome.action.onClicked.addListener(async (tab) => {
     });
   }
 });
+
+if (nextState === "ON") {
+    await chrome.scripting.executeScript({
+      target : {tabId : getTabId()},
+      func : startAudoDoping,
+    })
+    .then(() => console.log("autodoping started"));
+} else if (nextState === "OFF") {
+    await chrome.scripting.executeScript({
+      target : {tabId : getTabId()},
+      func : stopAudoDoping,
+    })
+    .then(() => console.log("autodoping stopped"));
+}
