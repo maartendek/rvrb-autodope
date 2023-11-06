@@ -1,11 +1,11 @@
 const baseurl = 'https://app.rvrb.one';
 
 const startAutoDoping = () => {
-  console.log('START!);
+  console.log('START!');
 }
 
 const stopAutoDoping = () => {
-  console.log('STOP!);
+  console.log('STOP!');
 }
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -26,19 +26,21 @@ chrome.action.onClicked.addListener(async (tab) => {
       tabId: tab.id,
       text: nextState,
     });
+
+    if (nextState === "ON") {
+      await chrome.scripting.executeScript({
+        target: { tabId: getTabId() },
+        func: startAudoDoping,
+      })
+        .then(() => console.log("autodoping started"));
+    } else if (nextState === "OFF") {
+      await chrome.scripting.executeScript({
+        target: { tabId: getTabId() },
+        func: stopAudoDoping,
+      })
+        .then(() => console.log("autodoping stopped"));
+    }
   }
 });
 
-if (nextState === "ON") {
-    await chrome.scripting.executeScript({
-      target : {tabId : getTabId()},
-      func : startAudoDoping,
-    })
-    .then(() => console.log("autodoping started"));
-} else if (nextState === "OFF") {
-    await chrome.scripting.executeScript({
-      target : {tabId : getTabId()},
-      func : stopAudoDoping,
-    })
-    .then(() => console.log("autodoping stopped"));
-}
+
