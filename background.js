@@ -9,10 +9,27 @@ const stopAutoDoping = () => {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.action.setBadgeText({
-    text: "OFF",
+  // disable by default
+  chrome.action.disable();
+
+  // Clear all rules to ensure only our expected rules are set
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+    // Declare a rule to enable the action on rvrb.one pages
+    let exampleRule = {
+      conditions: [
+        new chrome.declarativeContent.PageStateMatcher({
+          pageUrl: { hostSuffix: '.rvrb.one' },
+        })
+      ],
+      actions: [new chrome.declarativeContent.ShowAction()],
+    };
+
+    // Finally, apply our new array of rules
+    let rules = [exampleRule];
+    chrome.declarativeContent.onPageChanged.addRules(rules);
   });
 });
+
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url.startsWith(baseurl)) {
@@ -29,13 +46,13 @@ chrome.action.onClicked.addListener(async (tab) => {
 
     if (nextState === "ON") {
       await chrome.scripting.executeScript({
-        target: { tabId: getTabId() },
+        target: { tabId: tab.id },
         func: startAudoDoping,
       })
         .then(() => console.log("autodoping started"));
     } else if (nextState === "OFF") {
       await chrome.scripting.executeScript({
-        target: { tabId: getTabId() },
+        target: { tabId: tab.id },
         func: stopAudoDoping,
       })
         .then(() => console.log("autodoping stopped"));
