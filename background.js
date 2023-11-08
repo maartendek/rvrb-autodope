@@ -1,4 +1,5 @@
 const baseurl = 'https://app.rvrb.one';
+let doping = false;
 
 const startAutoDoping = () => {
   console.log('START!');
@@ -9,53 +10,53 @@ const stopAutoDoping = () => {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  // disable by default
-  chrome.action.disable();
+  console.log('installed')
+  // // disable by default
+  // chrome.action.disable();
 
-  // Clear all rules to ensure only our expected rules are set
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
-    // Declare a rule to enable the action on rvrb.one pages
-    let exampleRule = {
-      conditions: [
-        new chrome.declarativeContent.PageStateMatcher({
-          pageUrl: { hostSuffix: '.rvrb.one' },
-        })
-      ],
-      actions: [new chrome.declarativeContent.ShowAction()],
-    };
+  // // Clear all rules to ensure only our expected rules are set
+  // chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+  //   // Declare a rule to enable the action on rvrb.com pages
+  //   let exampleRule = {
+  //     conditions: [
+  //       new chrome.declarativeContent.PageStateMatcher({
+  //         pageUrl: { hostSuffix: '.rvrb.one' },
+  //       })
+  //     ],
+  //     actions: [new chrome.declarativeContent.ShowAction()],
+  //   };
 
-    // Finally, apply our new array of rules
-    let rules = [exampleRule];
-    chrome.declarativeContent.onPageChanged.addRules(rules);
-  });
+  //   // Finally, apply our new array of rules
+  //   let rules = [exampleRule];
+  //   chrome.declarativeContent.onPageChanged.addRules(rules);
+  // });
 });
 
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url.startsWith(baseurl)) {
-    // Retrieve the action badge to check if the extension is 'ON' or 'OFF'
-    const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
-    // Next state will always be the opposite
-    const nextState = prevState === 'ON' ? 'OFF' : 'ON'
+    // set new doping status
+    doping = !doping;
 
-    // Set the action badge to the next state
-    await chrome.action.setBadgeText({
-      tabId: tab.id,
-      text: nextState,
-    });
+    // Next state will always be the opposite
+    const nextState = doping === true ? 'ON' : 'OFF'
 
     if (nextState === "ON") {
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: startAudoDoping,
+        func: startAutoDoping,
       })
         .then(() => console.log("autodoping started"));
+      chrome.action.setIcon({ path: 'images/rvrb-ad-on.png', tabId: tab.id });
+
     } else if (nextState === "OFF") {
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: stopAudoDoping,
+        func: stopAutoDoping,
       })
-        .then(() => console.log("autodoping stopped"));
+        .then((msg) => console.log("autodoping stopped", msg));
+      chrome.action.setIcon({ path: 'images/rvrb-ad.png', tabId: tab.id });
+
     }
   }
 });

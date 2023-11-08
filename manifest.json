@@ -4,22 +4,15 @@
   "description": "Enable autodope on RVRB.",
   "version": "1.0",
   "icons": {
-    "16": "images/rvrb-circle_logo-128.png",
-    "32": "images/rvrb-circle_logo-128.png",
-    "48": "images/rvrb-circle_logo-128.png",
-    "128": "images/rvrb-circle_logo-128.png"
-  },
-  "action": {
-    "default_icon": {
-      "16": "images/rvrb-circle_logo-128.png",
-      "32": "images/rvrb-circle_logo-128.png",
-      "48": "images/rvrb-circle_logo-128.png",
-      "128": "images/rvrb-circle_logo-128.png"
-    }
+    "16": "images/rvrb-ad.png",
+    "32": "images/rvrb-ad.png",
+    "48": "images/rvrb-ad.png",
+    "128": "images/rvrb-ad.png"
   },
   "background": {
     "service_worker": "background.js"
   },
+  "action": {},
   "permissions": [
     "scripting",
     "activeTab",
