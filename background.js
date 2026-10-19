@@ -2,6 +2,15 @@
 chrome.runtime.onInstalled.addListener(() => {
   console.log("AutoDope extension installed");
   chrome.storage.local.set({ autoDope_enabled: false });
+  updateIcon(false);
+});
+
+// Listen for messages from popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "updateIcon") {
+    updateIcon(request.enabled);
+    sendResponse({ success: true });
+  }
 });
 
 // Listen for storage changes and update icon

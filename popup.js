@@ -15,8 +15,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const newState = !isEnabled;
     await chrome.storage.local.set({ autoDope_enabled: newState });
 
-    // Update icon
-    updateIcon(newState);
+    // Tell background script to update icon
+    chrome.runtime.sendMessage({
+      action: "updateIcon",
+      enabled: newState,
+    });
 
     // Update popup UI
     updateUI(newState);
