@@ -9,7 +9,7 @@
     {
       "matches": ["https://app.rvrb.one/*"],
       "js": ["content.js"],
-      "runat": "document_idle"
+      "runat": "documentend"
     }
   ],
   "action": {

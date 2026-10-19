@@ -1,19 +1,54 @@
 class AutoDope {
   constructor() {
     this.isEnabled = false;
-    this.titleEl = document.querySelector("#trackTitle a");
-    this.dopeBtn = document.querySelector("[title='Vote Up']");
+    this.titleEl = null;
+    this.dopeBtn = null;
     this.mutationObserver = null;
     this.toggleBtn = null;
+    this.maxRetries = 10;
+    this.retryCount = 0;
+    this.retryDelay = 500; // milliseconds
+
+    this.setupMessageListener();
+    this.initializeWithRetry();
+  }
+
+  initializeWithRetry() {
+    this.titleEl = document.querySelector("#trackTitle a");
+    this.dopeBtn = document.querySelector("[title='Vote Up']");
 
     if (!this.titleEl || !this.dopeBtn) {
-      console.error("AutoDope: Required elements not found");
+      this.retryCount++;
+
+      if (this.retryCount <= this.maxRetries) {
+        console.log(
+          `AutoDope: Elements not found, retrying... (${this.retryCount}/${this.maxRetries})`,
+        );
+        setTimeout(() => this.initializeWithRetry(), this.retryDelay);
+      } else {
+        console.error(
+          "AutoDope: Required elements not found after multiple retries",
+        );
+        console.log("AutoDope: Debugging info:");
+        console.log(
+          "- #trackTitle a:",
+          document.querySelector("#trackTitle a"),
+        );
+        console.log(
+          '- [title="Vote Up"]:',
+          document.querySelector("[title='Vote Up']"),
+        );
+        console.log(
+          "- All elements with title attribute:",
+          document.querySelectorAll("[title]"),
+        );
+      }
       return;
     }
 
+    console.log("AutoDope: Elements found, initializing...");
     this.loadState();
     this.init();
-    this.setupMessageListener();
   }
 
   init() {
@@ -65,7 +100,7 @@ class AutoDope {
   }
 
   loadState() {
-    // Load from chrome storage instead of localStorage
+    // Load from chrome storage
     chrome.storage.local.get("autoDope_enabled", (result) => {
       this.isEnabled = result.autoDope_enabled || false;
       if (this.toggleBtn) this.updateButtonState();
@@ -101,7 +136,9 @@ class AutoDope {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.action === "toggleAutoDope") {
         this.isEnabled = request.enabled;
-        this.updateButtonState();
+        if (this.toggleBtn) {
+          this.updateButtonState();
+        }
         sendResponse({ success: true });
       }
     });
