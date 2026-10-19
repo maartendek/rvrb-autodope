@@ -9,7 +9,52 @@ class AutoDope {
     this.retryDelay = 500; // milliseconds
 
     this.setupMessageListener();
+    this.setupNavigationListener();
     this.initializeWithRetry();
+  }
+
+  setupNavigationListener() {
+    // Listen for page navigation/reload
+    window.addEventListener("beforeunload", () => {
+      console.log("AutoDope: Page unloading, cleaning up...");
+      this.destroy();
+    });
+
+    // Listen for history changes (SPA navigation)
+    window.addEventListener("popstate", () => {
+      console.log("AutoDope: Navigation detected, reinitializing...");
+      this.destroy();
+      this.retryCount = 0;
+      this.initializeWithRetry();
+    });
+
+    // Listen for dynamic content changes (if the app uses dynamic routing)
+    const observer = new MutationObserver((mutations) => {
+      // Check if main content was replaced
+      const mainContentReplaced = mutations.some(
+        (mutation) =>
+          mutation.removedNodes.length > 0 &&
+          Array.from(mutation.removedNodes).some(
+            (node) =>
+              node.nodeType === 1 &&
+              (node.id === "trackTitle" ||
+                node.classList.contains("track-container")),
+          ),
+      );
+
+      if (mainContentReplaced) {
+        console.log("AutoDope: Main content changed, reinitializing...");
+        this.destroy();
+        this.retryCount = 0;
+        this.initializeWithRetry();
+      }
+    });
+
+    // Observe body for major structural changes
+    observer.observe(document.body, {
+      childList: true,
+      subtree: false,
+    });
   }
 
   initializeWithRetry() {
@@ -43,11 +88,18 @@ class AutoDope {
   }
 
   setupMutationObserver() {
+    // Clean up old observer if it exists
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
+    }
+
     this.mutationObserver = new MutationObserver(() => this.onTrackChange());
     this.mutationObserver.observe(this.titleEl, {
       childList: true,
       subtree: true,
     });
+
+    console.log("AutoDope: Mutation observer set up");
   }
 
   onTrackChange() {
@@ -80,9 +132,13 @@ class AutoDope {
   }
 
   destroy() {
+    console.log("AutoDope: Destroying instance...");
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
+      this.mutationObserver = null;
     }
+    this.titleEl = null;
+    this.dopeBtn = null;
   }
 }
 
