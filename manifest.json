@@ -1,21 +1,32 @@
 {
   "manifest_version": 3,
   "name": "RVRB AutoDope",
-  "description": "Enable autodope on RVRB.",
-  "version": "1.0",
+  "version": "1.1",
+  "description": "Auto-vote tracks on RVRB",
+  "permissions": ["storage", "scripting", "activeTab", "declarativeContent"],
+  "host_permissions": ["https://app.rvrb.one/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://app.rvrb.one/*"],
+      "js": ["content.js"],
+      "runat": "documentend"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AutoDope",
+    "default_icon": {
+      "16": "icons/rvrb-ad.png",
+      "48": "icons/rvrb-ad.png",
+      "128": "icons/rvrb-ad.png"
+    }
+  },
   "icons": {
-    "16": "images/rvrb-ad.png",
-    "32": "images/rvrb-ad.png",
-    "48": "images/rvrb-ad.png",
-    "128": "images/rvrb-ad.png"
+    "16": "icons/icon-ad.png",
+    "48": "icons/icon-ad.png",
+    "128": "icons/icon-ad.png"
   },
   "background": {
     "service_worker": "background.js"
-  },
-  "action": {},
-  "permissions": [
-    "scripting",
-    "activeTab",
-    "declarativeContent"
-  ]
+  }
 }
