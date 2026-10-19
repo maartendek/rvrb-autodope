@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("Content script not loaded on this tab");
         });
     });
+
+    // Close popup after 300ms
+    setTimeout(() => {
+      window.close();
+    }, 300);
   });
 
   function updateUI(enabled) {

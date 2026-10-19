@@ -4,7 +4,6 @@ class AutoDope {
     this.titleEl = null;
     this.dopeBtn = null;
     this.mutationObserver = null;
-    this.toggleBtn = null;
     this.maxRetries = 10;
     this.retryCount = 0;
     this.retryDelay = 500; // milliseconds
@@ -53,7 +52,6 @@ class AutoDope {
 
   init() {
     this.setupMutationObserver();
-    this.createToggleButton();
   }
 
   setupMutationObserver() {
@@ -65,80 +63,25 @@ class AutoDope {
   }
 
   onTrackChange() {
-    if (this.titleEl) {
-      console.log("Track changed:", this.titleEl.textContent);
-    }
     if (this.isEnabled && this.dopeBtn) {
       this.dopeBtn.click();
-      console.log("Auto-voted track");
+      console.log(`Auto-voted track "${this.titleEl.textContent}"`);
     }
-  }
-
-  createToggleButton() {
-    this.toggleBtn = document.createElement("button");
-    this.toggleBtn.textContent = "AutoDope";
-    this.toggleBtn.setAttribute("aria-label", "Toggle AutoDope");
-
-    Object.assign(this.toggleBtn.style, {
-      position: "absolute",
-      bottom: "50px",
-      right: "20px",
-      padding: "8px 12px",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-      backgroundColor: "#f0f0f0",
-      cursor: "pointer",
-      fontSize: "14px",
-      fontWeight: "bold",
-      zIndex: "9999",
-      transition: "all 0.3s ease",
-    });
-
-    this.toggleBtn.addEventListener("click", () => this.toggle());
-    document.body.appendChild(this.toggleBtn);
-    this.updateButtonState();
   }
 
   loadState() {
     // Load from chrome storage
     chrome.storage.local.get("autoDope_enabled", (result) => {
       this.isEnabled = result.autoDope_enabled || false;
-      if (this.toggleBtn) this.updateButtonState();
+      console.log(`AutoDope state loaded: ${this.isEnabled ? "ON" : "OFF"}`);
     });
-  }
-
-  saveState() {
-    chrome.storage.local.set({ autoDope_enabled: this.isEnabled });
-  }
-
-  toggle() {
-    this.isEnabled = !this.isEnabled;
-    this.saveState();
-    this.updateButtonState();
-    console.log(`AutoDope is now ${this.isEnabled ? "ON" : "OFF"}`);
-  }
-
-  updateButtonState() {
-    if (!this.toggleBtn) return;
-
-    if (this.isEnabled) {
-      this.toggleBtn.style.backgroundColor = "#4CAF50";
-      this.toggleBtn.style.color = "white";
-      this.toggleBtn.textContent = "✓ AutoDope ON";
-    } else {
-      this.toggleBtn.style.backgroundColor = "#f0f0f0";
-      this.toggleBtn.style.color = "black";
-      this.toggleBtn.textContent = "AutoDope";
-    }
   }
 
   setupMessageListener() {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.action === "toggleAutoDope") {
         this.isEnabled = request.enabled;
-        if (this.toggleBtn) {
-          this.updateButtonState();
-        }
+        console.log(`AutoDope toggled: ${this.isEnabled ? "ON" : "OFF"}`);
         sendResponse({ success: true });
       }
     });
@@ -147,10 +90,6 @@ class AutoDope {
   destroy() {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
-    }
-    if (this.toggleBtn) {
-      this.toggleBtn.removeEventListener("click", () => this.toggle());
-      this.toggleBtn.remove();
     }
   }
 }
