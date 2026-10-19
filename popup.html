@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 280px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .header h2 {
+      font-size: 18px;
+      color: #333;
+      margin: 0;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ccc;
+      transition: background 0.3s ease;
+    }
+
+    .status-indicator.on {
+      background: #4CAF50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+    }
+
+    .toggle-button {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    .toggle-button.off {
+      background: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    .toggle-button.off:hover {
+      background: #e0e0e0;
+    }
+
+    .toggle-button.on {
+      background: #4CAF50;
+      color: white;
+      border: 1px solid #45a049;
+    }
+
+    .toggle-button.on:hover {
+      background: #45a049;
+    }
+
+    .info {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #4CAF50;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 12px;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .status-text.on {
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-weight: 500;
+    }
+
+    .status-text.off {
+      background: #fafafa;
+      color: #666;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #999;
+      text-align: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .error {
+      padding: 8px;
+      background: #ffebee;
+      color: #c62828;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>AutoDope</h2>
+      <div class="status-indicator" id="statusIndicator"></div>
+    </div>
+
+    <div id="errorMessage" class="error" style="display: none;"></div>
+
+    <button id="toggleButton" class="toggle-button off">Enable AutoDope</button>
+
+    <div class="info">
+      💡 AutoDope automatically votes up tracks on app.rvrb.one
+    </div>
+
+    <div class="status-text off" id="statusText">
+      Status: <strong>OFF</strong>
+    </div>
+
+    <div class="footer">
+      v1.0 | Works on app.rvrb.one
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

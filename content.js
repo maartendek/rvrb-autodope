@@ -13,6 +13,7 @@ class AutoDope {
 
     this.loadState();
     this.init();
+    this.setupMessageListener();
   }
 
   init() {
@@ -64,13 +65,15 @@ class AutoDope {
   }
 
   loadState() {
-    const saved = localStorage.getItem("autoDope_enabled");
-    this.isEnabled = saved === "true";
-    if (this.toggleBtn) this.updateButtonState();
+    // Load from chrome storage instead of localStorage
+    chrome.storage.local.get("autoDope_enabled", (result) => {
+      this.isEnabled = result.autoDope_enabled || false;
+      if (this.toggleBtn) this.updateButtonState();
+    });
   }
 
   saveState() {
-    localStorage.setItem("autoDope_enabled", this.isEnabled.toString());
+    chrome.storage.local.set({ autoDope_enabled: this.isEnabled });
   }
 
   toggle() {
@@ -92,6 +95,16 @@ class AutoDope {
       this.toggleBtn.style.color = "black";
       this.toggleBtn.textContent = "AutoDope";
     }
+  }
+
+  setupMessageListener() {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === "toggleAutoDope") {
+        this.isEnabled = request.enabled;
+        this.updateButtonState();
+        sendResponse({ success: true });
+      }
+    });
   }
 
   destroy() {
