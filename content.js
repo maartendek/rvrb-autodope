@@ -39,6 +39,7 @@ class AutoDope {
 
   init() {
     this.setupMutationObserver();
+    this.dope();
   }
 
   setupMutationObserver() {
