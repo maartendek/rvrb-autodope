@@ -28,19 +28,6 @@ class AutoDope {
         console.error(
           "AutoDope: Required elements not found after multiple retries",
         );
-        console.log("AutoDope: Debugging info:");
-        console.log(
-          "- #trackTitle a:",
-          document.querySelector("#trackTitle a"),
-        );
-        console.log(
-          '- [title="Vote Up"]:',
-          document.querySelector("[title='Vote Up']"),
-        );
-        console.log(
-          "- All elements with title attribute:",
-          document.querySelectorAll("[title]"),
-        );
       }
       return;
     }
@@ -63,10 +50,7 @@ class AutoDope {
   }
 
   onTrackChange() {
-    if (this.isEnabled && this.dopeBtn) {
-      this.dopeBtn.click();
-      console.log(`Auto-voted track "${this.titleEl.textContent}"`);
-    }
+    this.dope();
   }
 
   loadState() {
@@ -85,6 +69,13 @@ class AutoDope {
         sendResponse({ success: true });
       }
     });
+  }
+
+  dope() {
+    if (this.isEnabled && this.dopeBtn) {
+      this.dopeBtn.click();
+      console.log(`Auto-voted track "${this.titleEl.textContent}"`);
+    }
   }
 
   destroy() {
