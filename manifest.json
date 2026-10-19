@@ -3,7 +3,7 @@
   "name": "RVRB AutoDope",
   "version": "1.1",
   "description": "Auto-vote tracks on RVRB",
-  "permissions": ["storage", "scripting", "activeTab", "declarativeContent"],
+  "permissions": ["storage"],
   "host_permissions": ["https://app.rvrb.one/*"],
   "content_scripts": [
     {
