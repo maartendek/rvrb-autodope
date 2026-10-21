@@ -41,7 +41,7 @@ All data is stored locally on your device. To delete all data:
 We may update this privacy policy occasionally. Continued use of the extension constitutes acceptance of any changes.
 
 ## Contact
-For questions about this privacy policy, please contact [Your Email/GitHub].
+For questions about this privacy policy, please contact me on [github](https://github.com/maartendek) or [dekker.maarten@gmail.com](mailto:dekker.maarten@gmail.com).
 
 ## Compliance
 This extension complies with:
